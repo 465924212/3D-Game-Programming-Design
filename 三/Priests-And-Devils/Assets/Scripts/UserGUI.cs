@@ -18,12 +18,17 @@ public class UserGUI : MonoBehaviour {
 
     void OnGUI()
     {
-        float width = Screen.width / 6;
-        float height = Screen.height / 12;
+        float width = Screen.width / 2;
+        float height = Screen.height / 2;
 
-        if (GUI.Button(new Rect(0, 0, width, height), "Game Over!"))
+        if (GUI.Button(new Rect(width + 130, height + 40, 100, 30 ), "GetOn")) 
         {
-            action.GameOver();
+            action.GetOnBoatP();
+        }
+
+        if (GUI.Button(new Rect(width + 270, height + 40, 100, 30), "GetOn"))
+        {
+            action.GetOnBoatD();
         }
     }
 }

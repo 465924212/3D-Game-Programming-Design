@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class FirstController : MonoBehaviour, ISceneController, IUserAction {
 
-	void Awake()
+    Stack<GameObject> priests;
+    Stack<GameObject> devils;
+
+    void Awake()
     {
         Director director = Director.getInstance();
         director.setFPS(60);
         director.currentSceneController = this;
         director.currentSceneController.LoadResources();
+        priests = new Stack<GameObject>();
+        devils = new Stack<GameObject>();
     }
 
     public void LoadResources()
@@ -18,28 +23,34 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction {
                 Resources.Load("Prefab/Priest") as GameObject,
                 Vector3.right * 6, Quaternion.identity);
         priest1.name = "priest1";
+        priests.Push(priest1);
         GameObject priest2 = Instantiate<GameObject>(
                 Resources.Load("Prefab/Priest") as GameObject,
                 Vector3.right * 8, Quaternion.identity);
         priest2.name = "priest2";
+        priests.Push(priest2);
         GameObject priest3 = Instantiate<GameObject>(
                 Resources.Load("Prefab/Priest") as GameObject,
                 Vector3.right * 10, Quaternion.identity);
         priest3.name = "priest3";
+        priests.Push(priest3);
         Debug.Log("load priests\n");
 
         GameObject devil1 = Instantiate<GameObject>(
                 Resources.Load("Prefab/Devil") as GameObject,
                 Vector3.right * 12, Quaternion.identity);
         devil1.name = "devil1";
+        devils.Push(devil1);
         GameObject devil2 = Instantiate<GameObject>(
                 Resources.Load("Prefab/Devil") as GameObject,
                 Vector3.right * 14, Quaternion.identity);
         devil2.name = "devil2";
+        devils.Push(devil2);
         GameObject devil3 = Instantiate<GameObject>(
                 Resources.Load("Prefab/Devil") as GameObject,
                 Vector3.right * 16, Quaternion.identity);
         devil3.name = "devil3";
+        devils.Push(devil3);
         Debug.Log("load devils\n");
 
         GameObject GO = Instantiate<GameObject>(
@@ -83,5 +94,30 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction {
     public void GameOver()
     {
         Director.getInstance();
+    }
+
+    public void MoveBoat()
+    {
+
+    }
+
+    public void GetOnBoatD()
+    {
+
+    }
+
+    public void GetOnBoatP()
+    {
+
+    }
+
+    public void GetOffBoatL()
+    {
+
+    }
+
+    public void GetOffBoatR()
+    {
+
     }
 }
