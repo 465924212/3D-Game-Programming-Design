@@ -23,12 +23,12 @@ public class UserGUI : MonoBehaviour {
 
         if (GUI.Button(new Rect(width + 130, height + 40, 100, 30 ), "GetOn")) 
         {
-            action.GetOnBoatP();
+            action.GetOnBoatPR();
         }
 
         if (GUI.Button(new Rect(width + 270, height + 40, 100, 30), "GetOn"))
         {
-            action.GetOnBoatD();
+            action.GetOnBoatDR();
         }
     }
 }
