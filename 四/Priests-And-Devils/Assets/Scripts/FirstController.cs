@@ -46,7 +46,7 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction {
         BoatPosition = new List<Vector3>(2);
         BoatPosition.Add(new Vector3(3, -1.5f, 0));
         BoatPosition.Add(new Vector3(-3, -1.5f, 0));
-        OnBoatPosition = new List<Vector3>(2);
+        OnBoatPosition = new List<Vector3>(4);
         OnBoatPosition.Add(new Vector3(4, 0, 0));
         OnBoatPosition.Add(new Vector3(2, 0, 0));
         OnBoatPosition.Add(new Vector3(-2, 0, 0));
@@ -173,14 +173,16 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction {
         }
         else if (OnBoat.Contains(gameObject))
         {
+            OnBoat.Remove(gameObject);
+            gameObject.transform.SetParent(null, true);
             if (boatStatus.Equals(BoatStatus.full))
             {
                 boatStatus = BoatStatus.one;
-                if (OnBoatPosition.IndexOf(gameObject.transform.position) == 0 || OnBoatPosition.IndexOf(gameObject.transform.position) == 2)
+                if (OnBoatPosition[0] == gameObject.transform.position || OnBoatPosition[2] == gameObject.transform.position)
                 {
                     onBoatPos = OnBoatPos.left;
                 }
-                else if (OnBoatPosition.IndexOf(gameObject.transform.position) == 1 || OnBoatPosition.IndexOf(gameObject.transform.position) == 3)
+                else if (OnBoatPosition[1] == gameObject.transform.position || OnBoatPosition[3] == gameObject.transform.position)
                 {
                     onBoatPos = OnBoatPos.right;
                 }
@@ -189,8 +191,6 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction {
             {
                 boatStatus = BoatStatus.empty;
             }
-            OnBoat.Remove(gameObject);
-            gameObject.transform.SetParent(null, true);
             if (boatPos.Equals(BoatPos.right))
             {
                 Vector3 pos = Vector3.right;
