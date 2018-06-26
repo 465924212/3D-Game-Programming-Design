@@ -1,0 +1,9 @@
+本次作业完成的是修改打UFO为网络版。
+
+新建空游戏对象Player作为Prefab，挂载PlayerGUI，仅能击打飞碟以及得分。
+
+修改SceneController作为NetworkBehaviour，且将其与UserGUI等其他Script挂在空游戏对象Server上，Identity为ServerOnly。
+
+实现效果为在host端控制游戏进程，点击Start/ChangeMode分别可以发射一次飞碟或者改变飞碟运动模式，所有客户端同时能看到飞碟、可以击打得分。
+
+问题：在客户端看到的飞碟卡顿很严重，解决方式找到的有提高NetworkTransform的SendRate属性、不传递Transform的Position而改为传递速度与方向（使用运动学的运动模式无法解决，所以网络游戏中一般使用物理运动模式？）。
