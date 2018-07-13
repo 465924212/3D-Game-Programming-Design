@@ -1,55 +1,1 @@
-这次作业没有完成……以下是目前想法：
-在前几次的基础上，增加了两个EventManager，分别管理追逐开始与结束得分的事件。
-
-追逐开始事件管理器中，目前想法是每帧更新时都检查一下玩家是否在巡逻兵的巡逻范围内，如果是则raise追逐开始事件。（每帧检查开销应该略大，此处应有改动）
-  void Update () {
-        PatrolController controller = GetComponent<PatrolController>();
-    //if the character is in the controller's patrol square
-        //raise event
-        if (OnChaseAction != null)
-        {
-            controller.Patrol = false;
-            OnChaseAction(this, this.name + "start chasing!");
-        }
-  }
-
-追逐事件的处理者暂时定为巡逻兵本身，每个巡逻兵初始化时注册事件处理器，如果事件发生时玩家在该巡逻兵巡逻范围内，开始追逐状态。(此时需要处理如何销毁巡逻的SequenceAction)
-  void Start () {
-        Patrol = true;
-        ChaseEventManager.OnChaseAction += StartChase;
-        square = GetComponent<Transform>().position;
-  }
-
-
-结束得分事件管理器中，目前想法是当巡逻兵状态在追逐时，每帧更新时检查玩家是否逃出巡逻范围，如是则得分且将巡逻兵状态设置为巡逻状态。(此时需要处理如何销毁追逐的MoveToAction)
-   void Update()
-    {
-        PatrolController controller = GetComponent<PatrolController>();
-        //if the character is first in and out the controller's patrol square
-        //raise event
-        if (!controller.Patrol)
-        {
-            if (OnGetScoreAction != null)
-            {
-                controller.Patrol = true;
-                OnGetScoreAction(this, "Get 1 point!");
-            }
-        }
-    }
-
-
-所有巡逻兵均在加载时挂载了一个SequenceAction固定巡逻路线，路线由加载时的位置决定。
-    public void StartPatrol(GameObject gameObject)
-    {
-        Vector3 target = gameObject.transform.position;
-        List<ActionBase> actions = new List<ActionBase>();
-        ActionBase action = MoveToAction.GetAction(new Vector3(target.x + 2, 0, target.z), 0.2f);
-        actions.Add(action);
-        action = MoveToAction.GetAction(new Vector3(target.x + 2, 0, target.z + 2), 0.2f);
-        actions.Add(action);
-        action = MoveToAction.GetAction(new Vector3(target.x, 0, target.z + 2), 0.2f);
-        actions.Add(action);
-        action = MoveToAction.GetAction(new Vector3(target.x, 0, target.z), 0.2f);
-        actions.Add(action);
-        RunAction(gameObject, SequenceAction.GetSequenceAction(-1, 0, actions), this);
-    }
+游戏说明：进入并逃离巡逻兵范围可得1分，被追上会在Console发出Game Over消息，但无实际游戏结束的操作。以下是目前做到的部分：在前几次的基础上，去除ActionManager及其相关类，增加了一个EventManager类，管理追逐开始与结束的事件。追逐开始事件管理器中，目前想法是每帧更新时都检查一下玩家是否在某个巡逻兵的巡逻范围内，如果是则开始追逐事件，不在范围内且不在巡逻状态则恢复巡逻且得分。（每帧检查开销应该略大，应有改动）    void Update () {	//if the character is in the controller's patrol square        Vector3 player = Director.getInstance().currentSceneController.getPlayer().transform.position;        foreach (var i in Patrols)        {            //send message            if (player.x < i.square[2].x && player.x > i.square[0].x && player.z < i.square[2].z && player.z > i.square[0].z)            {                i.StartChase();            }            else if (!i.Patrol)            {                i.StopChase();                Recorder.RaiseScore();            }        }        }所有巡逻兵均在加载时挂载了一个PatrolController固定巡逻路线，路线由加载时的位置决定，如在巡逻状态则在巡逻路线上巡逻，否则追逐玩家。    void Update () {        if (Patrol)        {            Vector3 pos = GetComponent<Transform>().position;            if (line == 2)            {                transform.position = Vector3.MoveTowards(this.transform.position, square[2], 0.05f);                if (pos == square[2])                {                    line = 3;                }            }            else if (line == 3)            {                transform.position = Vector3.MoveTowards(this.transform.position, square[3], 0.05f);                if (pos == square[3])                {                    line = 4;                }            }            else if (line == 4)            {                transform.position = Vector3.MoveTowards(this.transform.position, square[0], 0.05f);                if (pos == square[0])                {                    line = 1;                }            }            else if (line == 1)            {                transform.position = Vector3.MoveTowards(this.transform.position, square[1], 0.05f);                if (pos == square[1])                {                    line = 2;                }            }        }        else        {            Vector3 player = Director.getInstance().currentSceneController.getPlayer().transform.position;            transform.position = Vector3.MoveTowards(this.transform.position, player, 0.05f);        }    }
